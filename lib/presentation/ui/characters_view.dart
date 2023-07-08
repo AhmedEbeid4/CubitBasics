@@ -90,8 +90,7 @@ class CharactersView extends StatelessWidget {
     });
     return Scaffold(
         appBar: AppBar(),
-        body: SafeArea(
-            child: OfflineBuilder(
+        body: OfflineBuilder(
           connectivityBuilder: (context, connectivity, child) {
             if (connectivity != ConnectivityResult.none) {
               return child;
@@ -100,7 +99,7 @@ class CharactersView extends StatelessWidget {
             }
           },
           child: blocWidget(),
-        )));
+        ));
   }
 
   void _onScroll(BuildContext context) {

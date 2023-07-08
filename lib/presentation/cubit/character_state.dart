@@ -5,7 +5,6 @@ enum CharacterPageStatus { loading, success, failure, internetIssue }
 @immutable
 abstract class CharacterState {}
 
-
 class CharactersPageState extends CharacterState {
   CharacterPageStatus? characterPageStatus;
   List<Character>? characters;
@@ -18,5 +17,5 @@ class CharactersPageState extends CharacterState {
   }
 
   CharactersPageState(
-      {this.characterPageStatus, this.characters, this.message, this.numberOfPages, this.currentPage});
+      {this.characterPageStatus, this.characters, this.message});
 }
