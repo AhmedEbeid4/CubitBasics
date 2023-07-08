@@ -1,4 +1,5 @@
 import 'package:cubit_code_lab/presentation/cubit/character_cubit.dart';
+import 'package:cubit_code_lab/presentation/ui/routes/route_names.dart';
 import 'package:cubit_code_lab/presentation/ui/widgets/character_item.dart';
 import 'package:cubit_code_lab/utils/extensions.dart';
 import 'package:flutter/material.dart';
@@ -48,17 +49,22 @@ class _CharactersViewState extends State<CharactersView> {
   }
 
   Widget listItems(List<Character> list) {
-    final end = context.read<CharacterCubit>().state.end;
+    final end = context.read<CharacterCubit>().end;
     return ListView.builder(
         controller: _scrollController,
         itemCount: list.length,
         itemBuilder: (ctx, index) {
           final currItem = list[index];
           if (index < list.length) {
-            return CharacterItem(
-              name: currItem.name,
-              status: currItem.status,
-              imageUrl: currItem.imageUrl,
+            return InkWell(
+              onTap: () => context.pushNamed(RoutesNames.characterDetailRoute,
+                  arguments: currItem),
+              child: CharacterItem(
+                id: '${currItem.id}',
+                name: currItem.name,
+                status: currItem.status,
+                imageUrl: currItem.imageUrl,
+              ),
             );
           }
           return end
@@ -69,22 +75,24 @@ class _CharactersViewState extends State<CharactersView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: SafeArea(
-      child: BlocBuilder<CharacterCubit, CharactersPageState>(
-        builder: (context, state) {
-          switch (state.characterPageStatus) {
-            case CharacterPageStatus.success:
-              return listItems(state.characters!);
-            case CharacterPageStatus.internetIssue:
-              return internetConnectionIssue();
-            case CharacterPageStatus.failure:
-              return Text(state.message.toString());
-            default:
-              return loading();
-          }
-        },
-      ),
-    ));
+    return Scaffold(
+        appBar: AppBar(),
+        body: SafeArea(
+          child: BlocBuilder<CharacterCubit, CharactersPageState>(
+            builder: (context, state) {
+              switch (state.characterPageStatus) {
+                case CharacterPageStatus.success:
+                  return listItems(state.characters!);
+                case CharacterPageStatus.internetIssue:
+                  return internetConnectionIssue();
+                case CharacterPageStatus.failure:
+                  return Text(state.message.toString());
+                default:
+                  return loading();
+              }
+            },
+          ),
+        ));
   }
 
   void _onScroll() {
@@ -99,5 +107,4 @@ class _CharactersViewState extends State<CharactersView> {
     final currentScroll = _scrollController.offset;
     return currentScroll >= maxScroll;
   }
-
 }

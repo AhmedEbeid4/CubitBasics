@@ -1,8 +1,10 @@
+
 import 'package:cubit_code_lab/data/network/api_service.dart';
 import 'package:cubit_code_lab/data/repository/RepositoryImp.dart';
 import 'package:cubit_code_lab/domain/repository/repository.dart';
 import 'package:cubit_code_lab/domain/use_case/fetch_page_use_case.dart';
 import 'package:cubit_code_lab/domain/use_case/get_all_use_case.dart';
+import 'package:cubit_code_lab/presentation/ui/character_details_view.dart';
 import 'package:cubit_code_lab/presentation/ui/characters_view.dart';
 import 'package:cubit_code_lab/presentation/ui/routes/route_names.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +32,9 @@ class AppRouter {
             return characterCubit;
           },
           child: const CharactersView()),
+
+      RoutesNames.characterDetailRoute : (context) => const CharacterDetailsView()
+
     };
   }
 }
