@@ -40,32 +40,21 @@ class CharacterCubit extends Cubit<CharactersPageState> {
         currentPage = 1;
         emit(CharactersPageState(
             characterPageStatus: CharacterPageStatus.success,
-            characters: characters,
-            numberOfPages: numberOfPages,
-            currentPage: currentPage));
+            characters: characters));
       }
     });
   }
 
   void findNextPage() {
-    print('HEEELLO');
     print('CURR_PAGE : $currentPage , PAGES_NUM : $numberOfPages');
-    print('CURR_PAGE : ${state.currentPage} , PAGES_NUM : ${state.numberOfPages}');
     if (end) return;
-    fetchPageUseCase.invoke(currentPage+1, (message) => {
-
-    }).then((value) {
-      if(value!= null){
-        for (var element in value) {
-          print(element.name);}
-
+    fetchPageUseCase.invoke(currentPage + 1, (message) => {}).then((value) {
+      if (value != null) {
         currentPage++;
         characters!.addAll(value);
         emit(CharactersPageState(
             characterPageStatus: CharacterPageStatus.success,
-            characters: characters,
-            numberOfPages: numberOfPages,
-            currentPage: currentPage));
+            characters: characters));
       }
     });
   }
