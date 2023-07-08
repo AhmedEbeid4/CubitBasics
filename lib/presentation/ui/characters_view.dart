@@ -4,6 +4,7 @@ import 'package:cubit_code_lab/presentation/ui/widgets/character_item.dart';
 import 'package:cubit_code_lab/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 
 import '../../domain/model/character.dart';
 
@@ -73,26 +74,39 @@ class _CharactersViewState extends State<CharactersView> {
         });
   }
 
+  Widget blocWidget() {
+    return BlocBuilder<CharacterCubit, CharactersPageState>(
+      builder: (context, state) {
+        switch (state.characterPageStatus) {
+          case CharacterPageStatus.success:
+            return listItems(state.characters!);
+          case CharacterPageStatus.internetIssue:
+            return internetConnectionIssue();
+          case CharacterPageStatus.failure:
+            return Text(state.message.toString());
+          default:
+            return loading();
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(),
         body: SafeArea(
-          child: BlocBuilder<CharacterCubit, CharactersPageState>(
-            builder: (context, state) {
-              switch (state.characterPageStatus) {
-                case CharacterPageStatus.success:
-                  return listItems(state.characters!);
-                case CharacterPageStatus.internetIssue:
+            child: OfflineBuilder(
+              connectivityBuilder: (context,connectivity,child){
+                if(connectivity != ConnectivityResult.none){
+                  return child;
+                } else {
                   return internetConnectionIssue();
-                case CharacterPageStatus.failure:
-                  return Text(state.message.toString());
-                default:
-                  return loading();
-              }
-            },
-          ),
-        ));
+                }
+              },
+              child: blocWidget(),
+        ))
+    );
   }
 
   void _onScroll() {

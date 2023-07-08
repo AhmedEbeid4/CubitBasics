@@ -32,7 +32,7 @@ class CharacterDetailsView extends StatelessWidget {
     final character = ModalRoute.of(context)!.settings.arguments as Character;
     return Scaffold(
         body: CustomScrollView(
-      slivers: [appBar(character)],
+          slivers: [appBar(character)],
     ));
   }
 }
