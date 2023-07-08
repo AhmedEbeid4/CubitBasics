@@ -9,10 +9,6 @@ class DataStatus<T> {
     this.message,
   });
 
-  factory DataStatus.loading() {
-    return DataStatus(status: Status.loading);
-  }
-
   factory DataStatus.success(T? data) {
     return DataStatus(
       status: Status.success,
@@ -29,7 +25,6 @@ class DataStatus<T> {
 }
 
 enum Status {
-  loading,
   success,
   fail,
 }
