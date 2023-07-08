@@ -5,7 +5,6 @@ enum CharacterPageStatus { loading, success, failure, internetIssue }
 @immutable
 abstract class CharacterState {}
 
-class CharacterInitial extends CharacterState {}
 
 class CharactersPageState extends CharacterState {
   CharacterPageStatus? characterPageStatus;
