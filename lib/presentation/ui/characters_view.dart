@@ -8,24 +8,12 @@ import 'package:flutter_offline/flutter_offline.dart';
 
 import '../../domain/model/character.dart';
 
-class CharactersView extends StatefulWidget {
-  const CharactersView({super.key});
+class CharactersView extends StatelessWidget {
+  CharactersView({super.key});
 
-  @override
-  State<CharactersView> createState() => _CharactersViewState();
-}
-
-class _CharactersViewState extends State<CharactersView> {
   List<Character>? characters;
-  final _scrollController = ScrollController();
 
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-    final cubit = BlocProvider.of<CharacterCubit>(context);
-    cubit.fetchData();
-  }
+  final _scrollController = ScrollController();
 
   Widget loading() {
     return const Center(
@@ -49,7 +37,7 @@ class _CharactersViewState extends State<CharactersView> {
     );
   }
 
-  Widget listItems(List<Character> list) {
+  Widget listItems(List<Character> list, BuildContext context) {
     final end = context.read<CharacterCubit>().end;
     return ListView.builder(
         controller: _scrollController,
@@ -79,7 +67,7 @@ class _CharactersViewState extends State<CharactersView> {
       builder: (context, state) {
         switch (state.characterPageStatus) {
           case CharacterPageStatus.success:
-            return listItems(state.characters!);
+            return listItems(state.characters!, context);
           case CharacterPageStatus.internetIssue:
             return internetConnectionIssue();
           case CharacterPageStatus.failure:
@@ -93,23 +81,29 @@ class _CharactersViewState extends State<CharactersView> {
 
   @override
   Widget build(BuildContext context) {
+    _scrollController.addListener(() {
+      _onScroll(context);
+    });
+    final cubit = BlocProvider.of<CharacterCubit>(context);
+    Future.delayed(Duration.zero, () {
+      cubit.fetchData();
+    });
     return Scaffold(
         appBar: AppBar(),
         body: SafeArea(
             child: OfflineBuilder(
-              connectivityBuilder: (context,connectivity,child){
-                if(connectivity != ConnectivityResult.none){
-                  return child;
-                } else {
-                  return internetConnectionIssue();
-                }
-              },
-              child: blocWidget(),
-        ))
-    );
+          connectivityBuilder: (context, connectivity, child) {
+            if (connectivity != ConnectivityResult.none) {
+              return child;
+            } else {
+              return internetConnectionIssue();
+            }
+          },
+          child: blocWidget(),
+        )));
   }
 
-  void _onScroll() {
+  void _onScroll(BuildContext context) {
     if (_isBottom) {
       context.read<CharacterCubit>().findNextPage();
     }

@@ -31,7 +31,7 @@ class AppRouter {
           create: (context) {
             return characterCubit;
           },
-          child: const CharactersView()),
+          child: CharactersView()),
 
       RoutesNames.characterDetailRoute : (context) => const CharacterDetailsView()
 
