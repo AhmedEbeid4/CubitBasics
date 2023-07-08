@@ -3,18 +3,25 @@ import 'package:cubit_code_lab/presentation/ui/routes/router.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const BaseApp());
+  /**
+      final res = await GetAllUseCase(RepositoryImp(ApiService())).invoke((message) => {
+      print('DATA : main:  $message')});
+      print('DATA : main:  $res');
+   **/
+
+  runApp(BaseApp(appRouter: AppRouter()));
 }
 
 class BaseApp extends StatelessWidget {
-  const BaseApp({super.key});
+  AppRouter appRouter;
+  BaseApp({super.key,required this.appRouter});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: RoutesNames.charactersRoute,
-      routes: routes,
+      routes: appRouter.getRoutes(),
     );
   }
 }
