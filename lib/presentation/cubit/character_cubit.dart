@@ -7,7 +7,7 @@ import '../../domain/use_case/get_all_use_case.dart';
 
 part 'character_state.dart';
 
-class CharacterCubit extends Cubit<CharactersPageState> {
+class CharacterCubit extends Cubit<CharactersUIState> {
   final GetAllUseCase allUseCase;
   final FetchPageUseCase fetchPageUseCase;
   List<Character>? characters;
@@ -19,28 +19,28 @@ class CharacterCubit extends Cubit<CharactersPageState> {
   }
 
   CharacterCubit({required this.allUseCase, required this.fetchPageUseCase})
-      : super(CharactersPageState());
+      : super(CharactersUIState());
 
   void fetchData() {
-    emit(CharactersPageState(characterPageStatus: CharacterPageStatus.loading));
+    emit(CharactersUIState(status: CharacterPageStatus.loading));
     allUseCase.invoke((message) {
       if (message == "Internet Connection Error") {
-        emit(CharactersPageState(
-            characterPageStatus: CharacterPageStatus.internetIssue,
+        emit(CharactersUIState(
+            status: CharacterPageStatus.internetIssue,
             message: message));
       } else {
-        emit(CharactersPageState(
-            characterPageStatus: CharacterPageStatus.failure,
+        emit(CharactersUIState(
+            status: CharacterPageStatus.failure,
             message: message));
       }
     }).then((value) {
       if (value != null) {
-        characters = value[1];
-        numberOfPages = value[0];
+        characters = value.data;
+        numberOfPages = value.numberOfPages!;
         currentPage = 1;
-        emit(CharactersPageState(
-            characterPageStatus: CharacterPageStatus.success,
-            characters: characters));
+        emit(CharactersUIState(
+            status: CharacterPageStatus.success,
+            data: characters));
       }
     });
   }
@@ -48,13 +48,16 @@ class CharacterCubit extends Cubit<CharactersPageState> {
   void findNextPage() {
     print('CURR_PAGE : $currentPage , PAGES_NUM : $numberOfPages');
     if (end) return;
-    fetchPageUseCase.invoke(currentPage + 1, (message) => {}).then((value) {
+    fetchPageUseCase.invoke(currentPage + 1).then((value) {
+      print('12 CURR_PAGE : $currentPage , PAGES_NUM : $numberOfPages');
       if (value != null) {
+        print('123 CURR_PAGE : $currentPage , PAGES_NUM : $numberOfPages');
+
         currentPage++;
-        characters!.addAll(value);
-        emit(CharactersPageState(
-            characterPageStatus: CharacterPageStatus.success,
-            characters: characters));
+        characters!.addAll(value.data!);
+        value.currentPage = currentPage;
+        value.data = characters!;
+        emit(value);
       }
     });
   }

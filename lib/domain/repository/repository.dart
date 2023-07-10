@@ -1,6 +1,6 @@
-import 'package:cubit_code_lab/utils/data_status.dart';
+import 'package:cubit_code_lab/presentation/cubit/character_cubit.dart';
 
 abstract class Repository{
-  Future<DataStatus<dynamic>> getFirstPage();
-  Future<DataStatus<dynamic>> getNextPage(int page);
+  Future<CharactersUIState> getFirstPage();
+  Future<CharactersUIState> getNextPage(int page);
 }

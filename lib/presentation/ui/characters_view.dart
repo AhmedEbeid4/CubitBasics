@@ -63,11 +63,11 @@ class CharactersView extends StatelessWidget {
   }
 
   Widget blocWidget() {
-    return BlocBuilder<CharacterCubit, CharactersPageState>(
+    return BlocBuilder<CharacterCubit, CharactersUIState>(
       builder: (context, state) {
-        switch (state.characterPageStatus) {
+        switch (state.status) {
           case CharacterPageStatus.success:
-            return listItems(state.characters!, context);
+            return listItems(state.data!, context);
           case CharacterPageStatus.internetIssue:
             return internetConnectionIssue();
           case CharacterPageStatus.failure:
